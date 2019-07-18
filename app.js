@@ -8,16 +8,37 @@ const morgan = require("morgan");
 const models = require("./models");
 const sequelize = models.sequelize;
 
+// Get references to our models
+const User = models.User;
+const Course = models.Course;
+
 // variable to enable global error logging
 const enableGlobalErrorLogging =
   process.env.ENABLE_GLOBAL_ERROR_LOGGING === "true";
 
-// tests my sequalize database connection
+// tests my sequalize connection and sync models with the db
 sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
+    // sync the models with the database
+    return sequelize.sync();
   })
+  // print all my User records to the console
+  .then(() => {
+    return User.findAll();
+  })
+  .then(data => {
+    console.log(JSON.stringify(data, null, 2));
+  })
+  // print all my Course records to the console
+  .then(() => {
+    return Course.findAll();
+  })
+  .then(data => {
+    console.log(JSON.stringify(data, null, 2));
+  })
+  // or catch any error and just print can't establish connection to the db
   .catch(err => {
     console.error("Unable to connect to the database:", err);
   });

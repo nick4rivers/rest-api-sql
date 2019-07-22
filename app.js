@@ -4,6 +4,9 @@
 const express = require("express");
 const morgan = require("morgan");
 
+// reference routes
+const routes = require("./routes");
+
 // imports the sequelize models
 const models = require("./models");
 const sequelize = models.sequelize;
@@ -57,6 +60,9 @@ app.get("/", (req, res) => {
     message: "Welcome to the REST API project!"
   });
 });
+
+// send to our api router in routes.js
+app.use("/api", routes);
 
 // send 404 if no other route matched
 app.use((req, res) => {

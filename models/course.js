@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Course = sequelize.define(
     "Course",
+    // TODO: Configure nullability of time and materials
     {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,

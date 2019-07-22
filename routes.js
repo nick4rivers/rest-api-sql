@@ -2,6 +2,14 @@
 
 const express = require("express");
 
+// imports the sequelize models
+const models = require("./models");
+const sequelize = models.sequelize;
+
+// Get references to our models
+const User = models.User;
+const Course = models.Course;
+
 // Set up the router instance
 const router = express.Router();
 
@@ -23,18 +31,22 @@ router.post("/users", (req, res) => {
 
 // GET ALL COURSES
 router.get("/courses", (req, res) => {
-  return res
-    .status(200)
-    .json({ message: "Succesful POST" })
-    .end();
+  Course.findAll().then(courses => {
+    return res
+      .json(courses)
+      .status(200)
+      .end();
+  });
 });
 
 // GET COURSE
-router.get("/courses:id", (req, res) => {
-  return res
-    .status(200)
-    .json({ message: "Succesful GET Course" })
-    .end();
+router.get("/courses/:id", (req, res) => {
+  Course.findByPk(req.params.id).then(course => {
+    return res
+      .json(course)
+      .status(200)
+      .end();
+  });
 });
 
 // POST COURSE

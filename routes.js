@@ -4,7 +4,6 @@ const express = require("express");
 
 // imports the sequelize models
 const models = require("./models");
-const sequelize = models.sequelize;
 
 // Get references to our models
 const User = models.User;
@@ -51,16 +50,29 @@ router.get("/courses/:id", (req, res) => {
 
 // POST COURSE
 router.post("/courses", (req, res) => {
-  return res.status(201).end();
+  console.log(req.body);
+  Course.create(req.body).then(course => {
+    return res
+      .location(`/api/courses/${course.id}`)
+      .status(201)
+      .end();
+  });
 });
 
 // PUT COURSE
-router.put("/courses:id", (req, res) => {
-  return res.status(204).end();
+router.put("/courses/:id", (req, res) => {
+  Course.findByPk(req.params.id).then(course => {
+    if (course) {
+      course.update(req.body);
+      return res.status(204).end();
+    } else {
+      res.send(404);
+    }
+  });
 });
 
 // DELETE COURSE
-router.delete("/courses:id", (req, res) => {
+router.delete("/courses/:id", (req, res) => {
   return res.status(204).end();
 });
 

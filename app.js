@@ -3,29 +3,35 @@
 // load modules
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
 // reference routes
 const routes = require("./routes");
 
 // imports the sequelize models
+const Sequelize = require("sequelize");
 const models = require("./models");
-const sequelize = models.sequelize;
 
 // Get references to our models
 const User = models.User;
 const Course = models.Course;
+
+// new sequelize instance
+const db = new Sequelize({
+  dialect: "sqlite",
+  storage: "./fsjstd-restapi.db"
+});
 
 // variable to enable global error logging
 const enableGlobalErrorLogging =
   process.env.ENABLE_GLOBAL_ERROR_LOGGING === "true";
 
 // tests my sequalize connection and sync models with the db
-sequelize
-  .authenticate()
+db.authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
     // sync the models with the database
-    return sequelize.sync();
+    return db.sync();
   })
   // print all my User records to the console
   .then(() => {
@@ -51,6 +57,9 @@ const app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan("dev"));
+
+// for parsing json content from request body
+app.use(express.json());
 
 // TODO setup your api routes here
 
